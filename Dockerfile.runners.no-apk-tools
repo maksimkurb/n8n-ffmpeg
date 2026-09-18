@@ -1,7 +1,7 @@
 ARG N8N_VERSION=latest
 ARG ALPINE_VERSION=3.22
 
-FROM ghcr.io/linuxcontainers/alpine:${ALPINE_VERSION} AS ffmpeg
+FROM public.ecr.aws/docker/library/alpine:${ALPINE_VERSION} AS ffmpeg
 RUN apk add --no-cache ffmpeg \
     && mkdir -p /out/bin /out/lib \
     && cp /usr/bin/ffmpeg /usr/bin/ffprobe /out/bin/ \
