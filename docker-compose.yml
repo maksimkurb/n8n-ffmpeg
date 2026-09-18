@@ -2,7 +2,7 @@ version: "3"
 
 services:
   n8n-ffmpeg:
-    image: rxchi1d/n8n-ffmpeg:latest
+    image: ghcr.io/maksimkurb/n8n-ffmpeg:latest
     ports:
       - "5678:5678"
     volumes:
