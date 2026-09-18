@@ -2,20 +2,18 @@
 
 [English](README.md) | [繁體中文](README.zh-tw.md)
 
-[![Build Status](https://github.com/rxchi1d/n8n-ffmpeg/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/rxchi1d/n8n-ffmpeg/actions)
-[![Check Updates Status](https://github.com/rxchi1d/n8n-ffmpeg/actions/workflows/check-updates.yml/badge.svg)](https://github.com/rxchi1d/n8n-ffmpeg/actions/workflows/check-updates.yml)
-[![Docker Pulls](https://img.shields.io/docker/pulls/rxchi1d/n8n-ffmpeg?label=n8n-ffmpeg%20pulls)](https://hub.docker.com/r/rxchi1d/n8n-ffmpeg)
-[![Docker Pulls (runners)](https://img.shields.io/docker/pulls/rxchi1d/n8n-runners-ffmpeg?label=n8n-runners-ffmpeg%20pulls)](https://hub.docker.com/r/rxchi1d/n8n-runners-ffmpeg)
+[![Build Status](https://github.com/maksimkurb/n8n-ffmpeg/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/maksimkurb/n8n-ffmpeg/actions)
+[![Check Updates Status](https://github.com/maksimkurb/n8n-ffmpeg/actions/workflows/check-updates.yml/badge.svg)](https://github.com/maksimkurb/n8n-ffmpeg/actions/workflows/check-updates.yml)
 
 Lightweight GitHub Actions workflow that periodically checks for new versions of the official n8n image, automatically builds and pushes multi-platform Docker images integrated with FFmpeg.
 
 ## Features
 
-- **Version Monitoring**: Periodically checks [official n8n Docker Hub](https://hub.docker.com/r/n8nio/n8n) for new versions.
+- **Version Monitoring**: Periodically checks the official n8n GitHub releases and waits for the corresponding GHCR images to become available.
 - **Automatic Build**: When a new version is detected, triggers a GitHub Actions workflow to build `linux/amd64` and `linux/arm64` images.
 - **FFmpeg Integration**: Pre-installs FFmpeg in the base official n8n image, eliminating the need for manual installation.
-- **Task Runners Image**: Also provides [`rxchi1d/n8n-runners-ffmpeg`](https://hub.docker.com/r/rxchi1d/n8n-runners-ffmpeg), an FFmpeg-enabled build of the official [`n8nio/runners`](https://hub.docker.com/r/n8nio/runners) sidecar image for task runners in `external` mode. See [Task Runners image](#task-runners-image-n8n-runners-ffmpeg).
-- **Automatic Push**: Automatically pushes all tags (including version number and `latest`) to the specified Docker Hub Repository.
+- **Task Runners Image**: Also provides `ghcr.io/maksimkurb/n8n-runners-ffmpeg`, an FFmpeg-enabled build of the official `ghcr.io/n8n-io/runners` sidecar image for task runners in `external` mode. See [Task Runners image](#task-runners-image-n8n-runners-ffmpeg).
+- **Automatic Push**: Automatically pushes all tags (including version number and `latest`) to GitHub Container Registry (GHCR). No Docker Hub credentials are required.
 
 ## Dockerfile variants
 
@@ -36,7 +34,7 @@ Details:
 1. **Pull the Image**
 
    ```bash
-   docker pull rxchi1d/n8n-ffmpeg:latest
+   docker pull ghcr.io/maksimkurb/n8n-ffmpeg:latest
    ```
 
 2. **Run the Container**
@@ -46,7 +44,7 @@ Details:
      --name n8n-ffmpeg \
      -p 5678:5678 \
      -v appdata/n8n/data:/home/node/.n8n \
-     rxchi1d/n8n-ffmpeg:latest
+     ghcr.io/maksimkurb/n8n-ffmpeg:latest
    ```
 
 3. **Docker Compose (Optional)**
@@ -55,7 +53,7 @@ Details:
    version: "3"
    services:
      n8n-ffmpeg:
-       image: rxchi1d/n8n-ffmpeg:latest
+       image: ghcr.io/maksimkurb/n8n-ffmpeg:latest
        environment:
          # Required: Enable Execute Command node to use ffmpeg
          - NODES_EXCLUDE=[]
@@ -70,7 +68,7 @@ Details:
 
 ## Task Runners image (`n8n-runners-ffmpeg`)
 
-When n8n runs [task runners](https://docs.n8n.io/hosting/configuration/task-runners/) in `external` mode, Code Node scripts execute in a separate sidecar container based on `n8nio/runners` — not in the main n8n container. In that setup, calling ffmpeg from a Code Node requires ffmpeg inside the runners image, so this project also provides `rxchi1d/n8n-runners-ffmpeg`:
+When n8n runs [task runners](https://docs.n8n.io/hosting/configuration/task-runners/) in `external` mode, Code Node scripts execute in a separate sidecar container based on `ghcr.io/n8n-io/runners` — not in the main n8n container. In that setup, calling ffmpeg from a Code Node requires ffmpeg inside the runners image, so this project also provides `ghcr.io/maksimkurb/n8n-runners-ffmpeg`:
 
 - **FFmpeg pre-installed**, built and tagged automatically alongside the main image.
 - **Configurable Code Node allowlists**: the official runners image hardcodes `NODE_FUNCTION_ALLOW_BUILTIN` and related variables in `/etc/n8n-task-runners.json`, silently discarding values set on the container. This image patches the config so they can be set via container environment variables. Defaults are identical to the official image — if you set nothing, behavior is unchanged.
@@ -78,7 +76,7 @@ When n8n runs [task runners](https://docs.n8n.io/hosting/configuration/task-runn
 ```yaml
 services:
   n8n:
-    image: rxchi1d/n8n-ffmpeg:2.25.5
+    image: ghcr.io/maksimkurb/n8n-ffmpeg:2.25.5
     environment:
       - NODES_EXCLUDE=[]
       - N8N_RUNNERS_ENABLED=true
@@ -86,7 +84,7 @@ services:
       - N8N_RUNNERS_AUTH_TOKEN=<shared-secret>
 
   runners:
-    image: rxchi1d/n8n-runners-ffmpeg:2.25.5
+    image: ghcr.io/maksimkurb/n8n-runners-ffmpeg:2.25.5
     environment:
       - N8N_RUNNERS_AUTH_TOKEN=<shared-secret>
       - N8N_RUNNERS_TASK_BROKER_URI=http://n8n:5679
@@ -109,14 +107,14 @@ For a detailed introduction and implementation guide, please visit:
 - **build-and-push.yml**:
   - **Trigger Conditions**: Called by the `check-updates.yml` workflow, or manually triggered.
   - **Main Steps**:
-    - Resolves the image variant (`main` → `Dockerfile` / `rxchi1d/n8n-ffmpeg`, `runners` → `Dockerfile.runners` / `rxchi1d/n8n-runners-ffmpeg`).
-    - Sets up Docker Buildx environment and logs in to Docker Hub.
+    - Resolves the image variant (`main` → `Dockerfile` / `ghcr.io/maksimkurb/n8n-ffmpeg`, `runners` → `Dockerfile.runners` / `ghcr.io/maksimkurb/n8n-runners-ffmpeg`).
+    - Sets up Docker Buildx and logs in to GHCR with the built-in GitHub Actions token.
     - Builds and pushes multi-architecture Docker images for `linux/amd64` and `linux/arm64` platforms, using the specified n8n version number and `latest` as tags.
 - **check-updates.yml**:
   - **Trigger Conditions**: Runs automatically periodically (currently set to every 6 hours), or manually triggered.
   - **Main Steps**:
     - Fetches the latest version number from the official n8n GitHub repository.
-    - For each variant independently, checks whether our image already exists on Docker Hub and whether the upstream image (`n8nio/n8n` / `n8nio/runners`) for that version has been published.
+    - For each variant independently, checks whether our image already exists on GHCR and whether the upstream GHCR image (`ghcr.io/n8n-io/n8n` / `ghcr.io/n8n-io/runners`) for that version has been published.
     - Triggers `build-and-push.yml` separately for each variant that needs building, so one variant lagging upstream never blocks the other.
 
 ## Acknowledgements
