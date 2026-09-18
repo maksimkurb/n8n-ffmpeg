@@ -13,7 +13,7 @@ Lightweight GitHub Actions workflow that periodically checks for new versions of
 - **Automatic Build**: When a new version is detected, triggers a GitHub Actions workflow to build `linux/amd64` and `linux/arm64` images.
 - **FFmpeg Integration**: Pre-installs FFmpeg in the base official n8n image, eliminating the need for manual installation.
 - **Task Runners Image**: Also provides `ghcr.io/maksimkurb/n8n-runners-ffmpeg`, an FFmpeg-enabled build of the official `ghcr.io/n8n-io/runners` sidecar image for task runners in `external` mode. See [Task Runners image](#task-runners-image-n8n-runners-ffmpeg).
-- **Automatic Push**: Automatically pushes all tags (including version number and `latest`) to GitHub Container Registry (GHCR). No Docker Hub credentials are required.
+- **Automatic Push**: Automatically pushes all tags (including version number and `latest`) to GitHub Container Registry (GHCR). The build does not use Docker Hub or require Docker Hub credentials.
 
 ## Dockerfile variants
 
