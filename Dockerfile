@@ -4,10 +4,10 @@ ARG N8N_VERSION=latest
 # detected from the base image instead.
 ARG ALPINE_VERSION=3.22
 
-FROM alpine:${ALPINE_VERSION} AS apktools
+FROM ghcr.io/linuxcontainers/alpine:${ALPINE_VERSION} AS apktools
 RUN apk add --no-cache apk-tools-static
 
-FROM n8nio/n8n:${N8N_VERSION}
+FROM ghcr.io/n8n-io/n8n:${N8N_VERSION}
 
 USER root
 
