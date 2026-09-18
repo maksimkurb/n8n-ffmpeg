@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2026-06-06
 
 ### Added
-- Task runners image (`rxchi1d/n8n-runners-ffmpeg`) extending `n8nio/runners` with FFmpeg, in the same two variants as the main image (`Dockerfile.runners` and `Dockerfile.runners.no-apk-tools`). ([#4](https://github.com/RxChi1d/n8n-ffmpeg/issues/4))
+- Task runners image (`ghcr.io/maksimkurb/n8n-runners-ffmpeg`) extending `ghcr.io/n8n-io/runners` with FFmpeg, in the same two variants as the main image (`Dockerfile.runners` and `Dockerfile.runners.no-apk-tools`). ([#4](https://github.com/RxChi1d/n8n-ffmpeg/issues/4))
 - Runners Dockerfiles patch `/etc/n8n-task-runners.json` so the Code Node module allowlists (`NODE_FUNCTION_ALLOW_BUILTIN`, `NODE_FUNCTION_ALLOW_EXTERNAL`, `N8N_RUNNERS_STDLIB_ALLOW`, `N8N_RUNNERS_EXTERNAL_ALLOW`) become configurable via container environment variables, with defaults identical to the official image.
 - Default Dockerfile variants (main and runners) detect the base image's Alpine version from `/etc/os-release` at build time instead of hardcoding it, so package repositories always match the runtime base. `/etc/os-release` is used because the n8n base (Docker Hardened Images) ships no `/etc/alpine-release`.
 - Detection failures now abort the build: an empty detected version is guarded against, and the keys `cp -n` fallback no longer masks earlier errors in the install chain.
@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README (English and zh-tw) now documents the n8n@2.1.0 change that moved apk-tools removal to the final stage.
 - README (English and zh-tw) now links to the Dockerfile variants document sections.
 
-[Unreleased]: https://github.com/rxchi1d/n8n-ffmpeg/compare/v1.1.0...HEAD
-[1.1.0]: https://github.com/rxchi1d/n8n-ffmpeg/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/rxchi1d/n8n-ffmpeg/compare/v0.1.0...v1.0.0
-[0.1.0]: https://github.com/rxchi1d/n8n-ffmpeg/releases/tag/v0.1.0
+[Unreleased]: https://github.com/maksimkurb/n8n-ffmpeg/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/maksimkurb/n8n-ffmpeg/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/maksimkurb/n8n-ffmpeg/compare/v0.1.0...v1.0.0
+[0.1.0]: https://github.com/maksimkurb/n8n-ffmpeg/releases/tag/v0.1.0
