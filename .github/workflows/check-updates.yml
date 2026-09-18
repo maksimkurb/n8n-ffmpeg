@@ -2,8 +2,12 @@ name: Check n8n Updates
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # 每6小時檢查一次
-  workflow_dispatch:  # 手動觸發
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   check-updates:
@@ -14,30 +18,61 @@ jobs:
       should-build-runners: ${{ steps.version-check.outputs.should-build-runners }}
 
     steps:
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Check n8n latest version
         id: version-check
+        shell: bash
+        env:
+          GHCR_OWNER: ${{ github.repository_owner }}
         run: |
-          # 獲取官方最新版本
-          LATEST_VERSION=$(curl -s https://api.github.com/repos/n8n-io/n8n/releases/latest | jq -r .tag_name | sed 's/^n8n@//')
-          echo "latest-version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+          set -euo pipefail
 
-          # 對每個變體獨立判斷:我們的 tag 不存在、且官方上游 tag 已發布,才觸發建置
+          LATEST_VERSION="$(
+            curl --fail --silent --show-error \
+              https://api.github.com/repos/n8n-io/n8n/releases/latest |
+              jq -r '.tag_name' |
+              sed 's/^n8n@//'
+          )"
+
+          if [ -z "$LATEST_VERSION" ] || [ "$LATEST_VERSION" = "null" ]; then
+            echo "Failed to resolve latest n8n version" >&2
+            exit 1
+          fi
+
+          echo "latest-version=$LATEST_VERSION" >> "$GITHUB_OUTPUT"
+
           check_variant() {
-            local name="$1" ours="$2" upstream="$3"
+            local name="$1"
+            local ours="$2"
+            local upstream="$3"
+
             if docker manifest inspect "${ours}:${LATEST_VERSION}" >/dev/null 2>&1; then
               echo "[$name] ${ours}:${LATEST_VERSION} already exists, skipping"
-              echo "should-build-${name}=false" >> $GITHUB_OUTPUT
+              echo "should-build-${name}=false" >> "$GITHUB_OUTPUT"
             elif docker manifest inspect "${upstream}:${LATEST_VERSION}" >/dev/null 2>&1; then
-              echo "[$name] new version ${LATEST_VERSION} found and ${upstream} image is available"
-              echo "should-build-${name}=true" >> $GITHUB_OUTPUT
+              echo "[$name] new version ${LATEST_VERSION} found and ${upstream} is available"
+              echo "should-build-${name}=true" >> "$GITHUB_OUTPUT"
             else
               echo "[$name] ${upstream}:${LATEST_VERSION} not yet available, waiting"
-              echo "should-build-${name}=false" >> $GITHUB_OUTPUT
+              echo "should-build-${name}=false" >> "$GITHUB_OUTPUT"
             fi
           }
 
-          check_variant main rxchi1d/n8n-ffmpeg n8nio/n8n
-          check_variant runners rxchi1d/n8n-runners-ffmpeg n8nio/runners
+          check_variant \
+            main \
+            "ghcr.io/${GHCR_OWNER}/n8n-ffmpeg" \
+            "ghcr.io/n8n-io/n8n"
+
+          check_variant \
+            runners \
+            "ghcr.io/${GHCR_OWNER}/n8n-runners-ffmpeg" \
+            "ghcr.io/n8n-io/runners"
 
   trigger-build-main:
     needs: check-updates
