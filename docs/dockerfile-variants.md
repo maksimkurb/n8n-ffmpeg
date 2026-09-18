@@ -75,9 +75,9 @@ docker build -f Dockerfile.no-apk-tools -t n8n-ffmpeg:clean --build-arg N8N_VERS
 <a id="runners"></a>
 ## Task runners image variants
 
-The same two approaches apply to the official [`n8nio/runners`](https://hub.docker.com/r/n8nio/runners) image (the sidecar for task runners in `external` mode), which also removes apk-tools in its final stage:
+The same two approaches apply to the official `ghcr.io/n8n-io/runners` image (the sidecar for task runners in `external` mode), which also removes apk-tools in its final stage:
 
-- **Default (with apk-tools)**: [`Dockerfile.runners`](../Dockerfile.runners), published as `rxchi1d/n8n-runners-ffmpeg`.
+- **Default (with apk-tools)**: [`Dockerfile.runners`](../Dockerfile.runners), published as `ghcr.io/maksimkurb/n8n-runners-ffmpeg`.
 - **Clean (no apk-tools)**: [`Dockerfile.runners.no-apk-tools`](../Dockerfile.runners.no-apk-tools), self-build only.
 
 ### Differences from the main-image variants
