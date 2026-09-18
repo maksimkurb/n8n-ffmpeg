@@ -4,7 +4,7 @@ ARG N8N_VERSION=latest
 # detected from the base image instead.
 ARG ALPINE_VERSION=3.22
 
-FROM ghcr.io/linuxcontainers/alpine:${ALPINE_VERSION} AS apktools
+FROM public.ecr.aws/docker/library/alpine:${ALPINE_VERSION} AS apktools
 RUN apk add --no-cache apk-tools-static
 
 FROM ghcr.io/n8n-io/runners:${N8N_VERSION}
