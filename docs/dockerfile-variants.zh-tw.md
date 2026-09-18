@@ -74,9 +74,9 @@ docker build -f Dockerfile.no-apk-tools -t n8n-ffmpeg:clean --build-arg N8N_VERS
 <a id="runners"></a>
 ## Task runners 映像版本
 
-相同的兩種做法也適用於官方 [`n8nio/runners`](https://hub.docker.com/r/n8nio/runners) 映像（`external` 模式 task runners 的 sidecar），該映像同樣在 final stage 移除了 apk-tools：
+相同的兩種做法也適用於官方 `ghcr.io/n8n-io/runners` 映像（`external` 模式 task runners 的 sidecar），該映像同樣在 final stage 移除了 apk-tools：
 
-- **預設版本（含 apk-tools）**：[`Dockerfile.runners`](../Dockerfile.runners)，發布為 `rxchi1d/n8n-runners-ffmpeg`。
+- **預設版本（含 apk-tools）**：[`Dockerfile.runners`](../Dockerfile.runners)，發布為 `ghcr.io/maksimkurb/n8n-runners-ffmpeg`。
 - **乾淨版本（不含 apk-tools）**：[`Dockerfile.runners.no-apk-tools`](../Dockerfile.runners.no-apk-tools)，僅供自行建置。
 
 ### 與主映像版本的差異
