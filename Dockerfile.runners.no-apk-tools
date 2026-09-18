@@ -1,14 +1,14 @@
 ARG N8N_VERSION=latest
 ARG ALPINE_VERSION=3.22
 
-FROM alpine:${ALPINE_VERSION} AS ffmpeg
+FROM ghcr.io/linuxcontainers/alpine:${ALPINE_VERSION} AS ffmpeg
 RUN apk add --no-cache ffmpeg \
     && mkdir -p /out/bin /out/lib \
     && cp /usr/bin/ffmpeg /usr/bin/ffprobe /out/bin/ \
     && find /lib /usr/lib -type f -name '*.so*' -exec cp -a {} /out/lib/ \; \
     && find /lib /usr/lib -type l -name '*.so*' -exec cp -a {} /out/lib/ \;
 
-FROM n8nio/runners:${N8N_VERSION}
+FROM ghcr.io/n8n-io/runners:${N8N_VERSION}
 
 USER root
 
