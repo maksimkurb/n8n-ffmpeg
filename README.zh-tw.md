@@ -13,7 +13,7 @@
 - **自動構建**：檢測到新版本時，觸發 GitHub Actions 工作流程，構建 `linux/amd64` 與 `linux/arm64` 映像。  
 - **FFmpeg 整合**：在官方 n8n 基礎映像中預裝 FFmpeg，免去手動安裝步驟。  
 - **Task Runners 映像**：另提供 `ghcr.io/maksimkurb/n8n-runners-ffmpeg`，為官方 `ghcr.io/n8n-io/runners` sidecar 映像（`external` 模式的 task runners）整合 FFmpeg。詳見 [Task Runners 映像](#task-runners-映像n8n-runners-ffmpeg)。  
-- **自動推送**：將所有標籤（含版本號及 `latest`）自動推送到 GitHub Container Registry（GHCR），不需要 Docker Hub 憑證。  
+- **自動推送**：將所有標籤（含版本號及 `latest`）自動推送到 GitHub Container Registry（GHCR）。建置流程不使用 Docker Hub，也不需要 Docker Hub 憑證。  
 
 ## Dockerfile 版本
 
