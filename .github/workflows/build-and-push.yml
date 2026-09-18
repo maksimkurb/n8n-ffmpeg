@@ -79,5 +79,7 @@ jobs:
           tags: |
             ${{ steps.variant.outputs.image }}:${{ inputs.n8n-version }}
             ${{ steps.variant.outputs.image }}:latest
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
           cache-from: type=gha,scope=${{ inputs.variant }}
           cache-to: type=gha,mode=max,scope=${{ inputs.variant }}
